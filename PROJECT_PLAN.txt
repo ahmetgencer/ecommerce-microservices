@@ -1,0 +1,188 @@
+E-Ticaret Mikroservis Projesi Teknik Planı
+
+Özet
+
+Bu doküman, Node.js (TypeScript) ve mikroservis mimarisi kullanarak geliştirilecek 
+tam fonksiyonel bir e-ticaret sisteminin teknik planını içerir. Amaç, hem frontend 
+hem backend katmanlarını kapsayan, ölçeklenebilir ve geliştirilebilir bir sistem 
+ortaya koymaktır.
+
+Genel Mimarisi
+
+ecommerce-microservices/
+├── gateway/               → API Gateway (Express)
+├── services/
+│   ├── auth/              → Auth mikroservisi (JWT auth)
+│   ├── user/              → Kullanıcı profili
+│   ├── product/           → Ürün CRUD
+│   ├── cart/              → Sepet işlemleri
+│   ├── order/             → Sipariş yönetimi
+│   └── payment/          → (isteğe bağlı) Ödeme simülasyonu
+├── shared/                → Ortak yapılar (env, utils, DTO)
+├── docker-compose.yml     → Ortam yönetimi
+
+Kullanılan Teknolojiler
+
+Alan
+
+Teknoloji
+
+Dil
+
+TypeScript
+
+Backend
+
+Express.js
+
+Veritabanı
+
+MongoDB (MongoDB Atlas / Docker)
+
+API Gateway
+
+Express veya Express Gateway
+
+Servisler Arası İletişim
+
+REST (v1), ileri dönemde gRPC/NATS
+
+Kimlik Doğrulama
+
+JWT + Cookie
+
+Deployment
+
+Docker + Docker Compose
+
+Logging/Monitoring
+
+(Opsiyonel) ELK, Prometheus
+
+Servis Bazlı Detaylar
+
+1. Auth Service
+
+Kullanıcı kaydı ve girişi
+
+JWT üretimi, refresh token
+
+Şifre hashleme (bcrypt)
+
+Kimlik doğrulama middleware'ları
+
+2. User Service
+
+Kullanıcı profili CRUD
+
+Kullanıcı bilgilerinin getirilmesi / güncellenmesi
+
+3. Product Service
+
+Ürün ekleme, listeleme, silme, güncelleme
+
+Kategori filtreleme
+
+4. Cart Service
+
+Kullanıcıya özel sepet
+
+Ürün ekleme / çıkarma / miktar güncelleme
+
+5. Order Service
+
+Sipariş oluşturma
+
+Sipariş listesi, sipariş durumu güncelleme
+
+6. Payment Service (opsiyonel)
+
+Dummy ödeme alımı
+
+Stripe API ile entegrasyon (gelecekte)
+
+Frontend (Next.js)
+
+Next.js + TypeScript + Tailwind CSS
+
+Sayfalar:
+
+/ Ürün listesi
+
+/product/[id]
+
+/cart
+
+/checkout
+
+/login, /register
+
+API istekleri Axios veya fetch ile gateway üzerinden
+
+Deployment: Vercel
+
+Ortak Yapılar
+
+shared/: DTO tanımları, config, error handler, auth middleware
+
+Git ve Proje Başlangıcı
+
+git init
+echo node_modules > .gitignore
+git remote add origin https://github.com/kullanici/ecommerce-microservices.git
+git checkout -b main
+git add . && git commit -m "init project"
+
+Docker / Docker Compose
+
+Dockerfile (Her Servis İçin)
+
+FROM node:18
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+CMD ["npm", "run", "dev"]
+
+docker-compose.yml (Ana dizinde)
+
+version: '3.8'
+services:
+  auth:
+    build: ./services/auth
+    ports:
+      - "5001:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/authdb
+
+  product:
+    build: ./services/product
+    ports:
+      - "5002:5000"
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/productdb
+
+  mongo:
+    image: mongo
+    ports:
+      - "27017:27017"
+
+Deployment
+
+Frontend: Vercel (auto deploy from GitHub)
+
+Backend: Render, Railway, ya da kendi VPS
+
+Env: .env dosyaları .gitignore'a eklenmeli
+
+Sonraki Adımlar
+
+Product Servisi kurulumuyla başla
+
+Ardından Auth Servisi
+
+Gateway ile bağlantı kur
+
+Frontend gelişimine başla
+
+Test ve deploy
