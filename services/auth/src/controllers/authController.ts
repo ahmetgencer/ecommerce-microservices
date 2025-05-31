@@ -31,6 +31,7 @@ export const register = async (req: Request, res: Response) => {
 
     res.status(201).json(userData);
   } catch (err) {
+    console.error("Register error:", err);
     res.status(500).json({ message: "Registration failed", error: err });
   }
 };

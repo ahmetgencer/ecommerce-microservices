@@ -9,7 +9,7 @@ dotenv.config();
 const seedProducts = async () => {
   try {
     await connectDB();
-    await Product.deleteMany(); // eski verileri sil
+    await Product.deleteMany();
     const created = await Product.insertMany(products);
     console.log(`Inserted ${created.length} products.`);
     process.exit();
