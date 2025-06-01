@@ -1,3 +1,9 @@
+'use client';
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../../context/AuthContext";
+
 type Product = {
   _id: string;
   name: string;
@@ -16,6 +22,16 @@ const getProducts = async (): Promise<Product[]> => {
 };
 
 export default async function ProductListPage() {
+  const { token } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!token) {
+      router.push("/login");
+    }
+  }, [token]);
+
+  if (!token) return <p>Redirecting to login...</p>;
   const products = await getProducts();
 
   return (
